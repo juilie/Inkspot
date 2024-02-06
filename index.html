@@ -33,86 +33,169 @@
       //Our input texture
       uniform sampler2D uTexture; 
       uniform sampler2D uTextureTwo;
+      uniform sampler2D uTextureThree;
+      uniform sampler2D uTextureFour;
+      uniform sampler2D uTextureFive;
         varying vec2 vUvs;
         uniform vec2 uResolution;
         uniform vec2 uMouse;
       
       void main() {
           //special method to sample from texture
-          vec2 normMouse = uMouse/uResolution;
+          vec3 color = vec3(0.0);
           vec4 initTexture = texture2D(uTexture, vUvs);
-          vec4 helloTexture = texture2D(uTextureTwo, vUvs);
+          // gl_FragColor = vec4(0.,1.,0., 1.0);
       
-          vec3 colour = initTexture.rgb;
-
-          if(helloTexture.r > 0. && initTexture.r != 0.){
-            colour = initTexture.rgb;
+          if (initTexture.a == 0.0) {
+            color = vec3(1.,0.,0.);
+            color = texture2D(uTextureTwo, vUvs).rgb;
+            // gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);
           }
-      
-          gl_FragColor = vec4(colour, 1.0);
-      
+          
+          else if (initTexture.a == 1.0) {
+            color = vec3(1.,0.,1.);
+            color = texture2D(uTextureThree, vUvs).rgb;
+            // gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+          }
+          
+          else if (initTexture.a == 2.0) {
+            color = vec3(0.,0.,1.);
+            color = texture2D(uTextureFour, vUvs).rgb;
+            // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+          }
+          
+          else if (initTexture.a == 3.0) {
+            color = vec3(1.,0.5,0.2);
+            color = texture2D(uTextureFive, vUvs).rgb;
+            // gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+          }
+
+          gl_FragColor = vec4(color, 1.0);      
       }
           </script>
 
   <script id="fragmentShaderBuffer" type="x-shader/x-fragment">
-
+    
     precision mediump float;
-      //Our input texture
-      uniform sampler2D uTexture; 
-      uniform sampler2D uTextureTwo; 
-      uniform vec2 uResolution;
-      uniform vec2 uMouse;
-        varying vec2 vUvs;
+    //Our input texture
+    uniform sampler2D uTexture; 
+    uniform sampler2D uTextureTwo; 
+    uniform vec2 uResolution;
+    uniform vec2 uMouse;
+    uniform int uMouseState;
+    uniform float uTime;
+    varying vec2 vUvs;
+    
+    float rand(float co) { return fract(sin(co*(91.3458)) * 47453.5453); }
+    float rand(vec2 co){ return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453); }
+    int randn(float rnd, int n) { return int(round(float(n)*rnd)); }
 
-        float GetNeighbours(vec2 p) {
-          float count = 0.0;
-      
-          for(float y = -1.0; y <= 1.0; y++) {
-              for(float x = -1.0; x <= 1.0; x++) {
-      
-                  if(x == 0.0 && y == 0.0)
-                      continue;
-      
-                  // Scale the offset down
-                  vec2 offset = vec2(x, y) / uResolution.xy;	
-                  // Apply offset and sample texture	 
-                  vec4 lookup = texture2D(uTexture, p + offset); 
-                   // Accumulate the result
-                  count += lookup.r > 0.0 ? 1.0 : 0.0;
-              }
-          }
-      
-          return count;
+
+    float rcLogo() {
+      vec2 textureCoord = gl_FragCoord.xy / uResolution.xy;	
+      vec4 texel = texture2D(uTextureTwo, textureCoord);
+
+      if(texel.a == 0.0) {
+        return 0.;
+      }
+      else if(texel.g >= 0.5 && texel.r < 0.5) {
+        return 1.;
+      }
+      // checking for white for rc logo
+      else if(texel.r >= 0.5) {
+        return 2.;
+      }
+
+      return 3.;
+    }
+
+        int val2state(vec2 position) {
+
+        // Scale the offset down
+        vec2 textureCoord = position / uResolution.xy;	
+        // Apply offset and sample texture	 
+        vec4 texel = texture2D(uTexture, textureCoord);
+
+        return int(texel.a);
+      }
+
+      float state2val(int state) {
+        return float(state);
       }
 
       void main() {
-
+        
+      int q = 4;
       vec2 normMouse = vec2(uMouse.x, abs(uMouse.y - uResolution.y));
       normMouse = normMouse/uResolution;
+
+
       vec2 normCoord = gl_FragCoord.xy/uResolution;
       vec3 color = vec3(0.0);
       float neighbors = 0.0;
   
-  
-      neighbors += GetNeighbours(vUvs);
+      float J = 2.;
+      float h = .0001;
+      float T = log(1.+sqrt(float(q)))*2. + (4. * normCoord.x - 1.); // + normCoord.x/0.85 -2.;
+
+      vec2 n = vec2(0., 1.);
+      vec2 e = vec2(1., 0.);
+      vec2 s = vec2(0., -1.);
+      vec2 w = vec2(-1., 0.);
+
+    // vec2 ne = vec2(1., 1.);
+    // vec2 nw = vec2(1., -1.);
+    // vec2 se = vec2(-1., 1.);
+    // vec2 sw = vec2(-1., -1.);
       
-      color = texture2D(uTexture, vUvs).rgb;
-      vec2 checkMouse = normMouse - normCoord;
-      float alpha = 1.0;
-        
-        if(abs(checkMouse.x) < .00075 && abs(checkMouse.y) < .00075){
-          color = vec3(0.001,0.,0.);
-        }
-        
-        if(color.r > 0. && color.r < 1.){
-          color = color + vec3(.001);
-        } else if(neighbors == 3.){
-          color = vec3(.001);
-        } else if (color.r >= 1.){
-          color = vec3(0.0);
+      int state_n =  val2state(gl_FragCoord.xy+n);
+      int state_e =  val2state(gl_FragCoord.xy+e);
+      int state_s =  val2state(gl_FragCoord.xy+s);
+      int state_w =  val2state(gl_FragCoord.xy+w);
+
+     // int state_ne =  val2state(gl_FragCoord.xy+ne);
+     // int state_nw =  val2state(gl_FragCoord.xy+nw);
+     // int state_se =  val2state(gl_FragCoord.xy+se);
+     // int state_sw =  val2state(gl_FragCoord.xy+sw);
+
+      float rnd = rand(normCoord*(uTime+1.));
+      
+      int state = val2state(gl_FragCoord.xy);
+      float Hc = -h*float(state);
+      if (state_n == state) Hc+=J;
+      if (state_s == state) Hc+=J;
+      if (state_e == state) Hc+=J;
+      if (state_w == state) Hc+=J;
+      //if (state_ne == state) Hc+=J;
+      //if (state_nw == state) Hc+=J;
+      //if (state_se == state) Hc+=J;
+      //if (state_sw == state) Hc+=J;
+  
+      int test_state = (state+randn(rnd,q))%q;
+      float Ht = -h*float(test_state);
+      if (state_n == test_state) Ht+=J;
+      if (state_s == test_state) Ht+=J;
+      if (state_e == test_state) Ht+=J;
+      if (state_w == test_state) Ht+=J;
+     // if (state_ne == test_state) Ht+=J;
+     // if (state_nw == test_state) Ht+=J;
+     // if (state_se == test_state) Ht+=J;
+     // if (state_sw == test_state) Ht+=J;
+
+      float DE = Hc - Ht;
+    
+      if (DE < 0. || exp(-DE/T) > rnd) state = test_state;
+      
+      // float new_state = (uTime < 1.) ? rcLogo() : state2val(state);
+      float new_state = (uTime < 1.) ? state2val(int(rnd*100.)%q) : state2val(state);
+      
+        if (normMouse.x > 0. && normMouse.x < 1. && normMouse.y > 0. && normMouse.y < 1.) {
+          if (length(normCoord - normMouse) < 0.03) {
+            new_state = state2val(uMouseState);
+          }
         }
 
-      gl_FragColor = vec4(color, alpha);
+      gl_FragColor = vec4(new_state);
       }
           </script>
   <script type="module" src="./index.js"></script>
