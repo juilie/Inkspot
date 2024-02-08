@@ -84,12 +84,7 @@ class JulieShader {
                         y: 1.0
                     }
                 },
-                uMouseState: {value: 0},
-
-                uTime: {
-                    value: 0
-                },
-                uTextureTwo: { type: "t", value: loader.load( "rc.png" ) }
+                uTextureTwo: { type: "t", value: loader.load( "test.png" ) }
             },
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShaderBuffer').textContent
@@ -110,13 +105,7 @@ class JulieShader {
                         y: 1.0
                     }
                 },
-                uTime: {
-                    value: 0
-                },
-                uTextureTwo: { type: "t", value: loader.load( "1.jpg" ) },
-                uTextureThree: { type: "t", value: loader.load( "2.gif" ) },
-                uTextureFour: { type: "t", value: loader.load( "3.gif" ) },
-                uTextureFive: { type: "t", value: loader.load( "4.gif" ) }
+                uTextureTwo: { type: "t", value: loader.load( "test.png" ) }
             },
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShaderScreen').textContent
@@ -156,8 +145,7 @@ class JulieShader {
         // //update uniforms
         this.material.uniforms.uResolution.value.x = this.dimensions.width
         this.material.uniforms.uResolution.value.y = this.dimensions.height
-        
-        
+
         this.bufferMaterial.uniforms.uResolution.value.x = this.dimensions.width
         this.bufferMaterial.uniforms.uResolution.value.y = this.dimensions.height
     }
@@ -176,142 +164,14 @@ class JulieShader {
 
             this.planeMesh.material.uniforms.uTexture.value = this.renderBufferA.texture;
 
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-
             this.renderer.setRenderTarget(null);
             this.renderer.render(this.scene, this.camera)
 
-            let temp = this.renderBufferA
+            const temp = this.renderBufferA
             this.renderBufferA = this.renderBufferB
             this.renderBufferB = temp
             //output becomes input
             this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-            
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
-            this.renderer.setRenderTarget(this.renderBufferA);
-            this.renderer.render(this.bufferScene, this.camera)
-
-            temp = this.renderBufferA
-            this.renderBufferA = this.renderBufferB
-            this.renderBufferB = temp
-            //output becomes input
-            this.bufferMaterial.uniforms.uTexture.value = this.renderBufferB.texture;
-
-            this.material.uniforms.uTime.value = performance.now() * 0.001;
-            this.bufferMaterial.uniforms.uTime.value = performance.now() * 0.001;
 
             this.raf()
             this.previousRAF = t
@@ -369,8 +229,4 @@ let APP = null
 window.addEventListener('DOMContentLoaded', async () => {
     APP = new JulieShader();
     await APP.initialize()
-})
-
-window.addEventListener('mousedown', ()=>{
-    APP.bufferMaterial.uniforms.uMouseState.value +=(APP.bufferMaterial.uniforms.uMouseState.value +1)%4;
 })
