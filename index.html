@@ -92,25 +92,27 @@
       vec2 normCoord = gl_FragCoord.xy/uResolution;
       vec3 color = vec3(0.0);
       float neighbors = 0.0;
-  
-  
+
       neighbors += GetNeighbours(vUvs);
       
       color = texture2D(uTexture, vUvs).rgb;
       vec2 checkMouse = normMouse - normCoord;
       float alpha = 1.0;
         
-        if(abs(checkMouse.x) < .00075 && abs(checkMouse.y) < .00075){
-          color = vec3(0.001,0.,0.);
+        if(abs(checkMouse.x) < .001 && abs(checkMouse.y) < .001){
+          color = vec3(0.01);
         }
         
-        if(color.r > 0. && color.r < 1.){
-          color = color + vec3(.001);
+        if(color.r > 0.){
+          color = color + vec3(0.02);
         } else if(neighbors == 3.){
-          color = vec3(.001);
-        } else if (color.r >= 1.){
-          color = vec3(0.0);
+          color = vec3(0.1);
         }
+
+        if(color.r > 10.){
+          color = vec3(0.);
+        }
+        
 
       gl_FragColor = vec4(color, alpha);
       }
